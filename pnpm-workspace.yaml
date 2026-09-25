@@ -1,0 +1,3 @@
+packages:
+  - "packages/canvas-export-service"
+  - "examples/js-p5"
