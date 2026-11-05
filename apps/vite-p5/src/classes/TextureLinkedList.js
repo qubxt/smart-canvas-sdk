@@ -1,3 +1,4 @@
+
 class Node {
   constructor(key, img) {
     this.key = key
@@ -8,17 +9,15 @@ class Node {
 }
 
 class LinkedList {
-  constructor({ images }) {
+  constructor({images}) {
     this.images = images
     this.head = null
-    // this.setupImages()
   }
 
   async linkImages() {
-    // Convert each entry into a Promise that resolves to { key, img }
     const loaders = this.images.map(({ key, path, type }) => {
       return new Promise((resolve) => {
-        loadImage(path, (img) => resolve({ key, img }))
+      loadImage(path, (img) => resolve({ key, img }))
       })
     })
 
@@ -48,7 +47,8 @@ class LinkedList {
 
   async setupImages() {
     await this.linkImages().then(() => {
-      console.log(this)
+      nodes = nodes.head
+      console.log(nodes)
     })
   }
 }
