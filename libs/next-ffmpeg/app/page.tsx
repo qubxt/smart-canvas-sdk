@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <main style={{ padding: "2rem", fontFamily: "monospace" }}>
+    <main style={{ padding: '2rem', fontFamily: 'monospace' }}>
       <h1>FFmpeg Conversion Service</h1>
       <p>Status: Running</p>
       <h2>API</h2>
@@ -19,5 +19,5 @@ Response: video/mp4 binary`}</pre>
         <li>Containers: WebM (input), MP4 (output)</li>
       </ul>
     </main>
-  );
+  )
 }

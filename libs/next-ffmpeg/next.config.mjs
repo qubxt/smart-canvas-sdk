@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Instructs Next.js to aggregate all required node_modules into a minimal folder
-  output: "standalone",
-  
+  output: 'standalone',
+
   // Sets the tracing boundary to the service root inside the container
-  outputFileTracingRoot: isDocker ? __dirname : ".",
+  outputFileTracingRoot: isDocker ? __dirname : '.',
 
   turbopack: {
     root: monorepoRoot,
@@ -12,15 +12,15 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/api/:path*",
+        source: '/api/:path*',
         headers: [
-          { key: "Access-Control-Allow-Origin", value: "*" },
-          { key: "Access-Control-Allow-Methods", value: "POST, OPTIONS" },
-          { key: "Access-Control-Allow-Headers", value: "Content-Type" },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'POST, OPTIONS' },
+          { key: 'Access-Control-Allow-Headers', value: 'Content-Type' },
         ],
       },
-    ];
+    ]
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig
