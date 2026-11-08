@@ -2,24 +2,503 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>P5.js Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smart Canvas: p5.strands on WebGPU</title>
+    <meta
+      name="description"
+      content="Live p5.strands demos that compile one JavaScript function to WGSL or GLSL."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap"
+    />
+    <link rel="stylesheet" href="/src/site.css" />
   </head>
 
-  <body>
-    <div class="option">
-      <a href="src/sketches/test/test.html">Test sketch</a>
-    </div>
+  <body class="bg-ink font-sans text-paper antialiased">
+    <header
+      class="fixed inset-x-0 top-0 z-20 border-b border-paper/10 bg-ink/70 backdrop-blur-md"
+    >
+      <nav
+        class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6"
+      >
+        <a href="#top" class="font-display text-xl">Smart Canvas</a>
+        <div class="flex items-center gap-3 font-mono text-xs">
+          <div
+            role="group"
+            aria-label="Rendering backend"
+            class="flex rounded-full border border-paper/20 p-0.5"
+          >
+            <button
+              data-renderer="webgpu"
+              aria-pressed="false"
+              class="cursor-pointer rounded-full px-3 py-1.5 text-muted transition-colors hover:text-paper disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-muted aria-pressed:bg-paper aria-pressed:text-ink"
+            >
+              WebGPU
+            </button>
+            <button
+              data-renderer="webgl"
+              aria-pressed="false"
+              class="cursor-pointer rounded-full px-3 py-1.5 text-muted transition-colors hover:text-paper aria-pressed:bg-paper aria-pressed:text-ink"
+            >
+              WebGL2
+            </button>
+          </div>
+          <button
+            id="pause"
+            aria-pressed="false"
+            class="cursor-pointer text-muted transition-colors hover:text-paper"
+          >
+            Pause
+          </button>
+        </div>
+      </nav>
+    </header>
 
-    <div class="option">
-      <a href="src/sketches/global-mode/global.html">Global Mode sketch</a>
-    </div>
+    <main id="top">
+      <section class="relative flex min-h-svh items-end overflow-hidden">
+        <div data-demo="tide" class="absolute inset-0">
+          <img
+            src="/src/assets/textures/nostalgia.webp"
+            alt=""
+            class="absolute inset-0 size-full object-cover"
+          />
+        </div>
+        <div
+          class="pointer-events-none absolute inset-0 bg-linear-to-t from-ink via-ink/60 to-ink/15"
+        ></div>
+        <div
+          class="relative mx-auto w-full max-w-6xl px-4 pt-32 pb-16 sm:px-6 sm:pb-24"
+        >
+          <p class="font-mono text-xs tracking-widest text-paper uppercase">
+            p5.strands &times; WebGPU
+          </p>
+          <h1
+            class="mt-5 max-w-4xl font-display text-6xl leading-[0.98] sm:text-8xl"
+          >
+            Shaders, written in <em>plain JavaScript.</em>
+          </h1>
+          <p class="mt-6 max-w-xl text-lg leading-relaxed text-paper/85">
+            Every image on this page is a painting moved by a few lines of
+            p5.js. p5.strands compiles each function for the GPU, in WGSL or
+            GLSL.
+          </p>
+          <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <a
+              href="#demos"
+              class="rounded-full bg-paper px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-ember"
+            >
+              See the demos
+            </a>
+            <p
+              id="renderer-note"
+              aria-live="polite"
+              class="font-mono text-xs text-paper/70"
+            ></p>
+          </div>
+        </div>
+      </section>
 
-    <div class="option">
-      <a href="src/sketches/single-mode/single.html">Single sketch</a>
-    </div>
+      <section id="demos" class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <h2 class="font-display text-4xl sm:text-5xl">Four small motions</h2>
+        <p class="mt-4 max-w-xl leading-relaxed text-muted">
+          Nothing here is a video. Each texture is resampled on every frame, and
+          each effect only changes where the pixels are read from.
+        </p>
 
-    <div class="option">
-      <a href="src/sketches/multi-mode/multi.html">Multi sketch</a>
-    </div>
+        <div class="mt-12 grid gap-x-6 gap-y-12 md:grid-cols-6">
+          <figure class="md:col-span-4">
+            <div
+              data-demo="swell"
+              class="relative aspect-[4/3] overflow-hidden rounded-lg bg-ink-raised md:aspect-auto md:h-[26rem]"
+            >
+              <img
+                src="/src/assets/textures/ocean.webp"
+                alt="Painted blue and orange seascape in horizontal bands"
+                loading="lazy"
+                class="absolute inset-0 size-full object-cover"
+              />
+            </div>
+            <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+              <div>
+                <h3 class="font-display text-2xl">Swell</h3>
+                <p class="mt-1 text-sm text-muted">
+                  Sine waves whose frequency wanders with 3D noise.
+                </p>
+              </div>
+              <a
+                href="#anatomy"
+                data-show-effect="swell"
+                class="shrink-0 font-mono text-xs text-ember hover:underline"
+                >View shader</a
+              >
+            </figcaption>
+          </figure>
+
+          <figure class="md:col-span-2">
+            <div
+              data-demo="breathe"
+              class="relative aspect-square overflow-hidden rounded-lg bg-ink-raised md:aspect-auto md:h-[26rem]"
+            >
+              <img
+                src="/src/assets/textures/blue-red.webp"
+                alt="Blue and red abstract painting covered in chalk diagrams"
+                loading="lazy"
+                class="absolute inset-0 size-full object-cover"
+              />
+            </div>
+            <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+              <div>
+                <h3 class="font-display text-2xl">Breathe</h3>
+                <p class="mt-1 text-sm text-muted">
+                  A slow zoom with a slight rotation.
+                </p>
+              </div>
+              <a
+                href="#anatomy"
+                data-show-effect="breathe"
+                class="shrink-0 font-mono text-xs text-ember hover:underline"
+                >View shader</a
+              >
+            </figcaption>
+          </figure>
+
+          <figure class="md:col-span-2">
+            <div
+              data-demo="feather"
+              class="relative aspect-square overflow-hidden rounded-lg bg-ink-raised md:aspect-auto md:h-[26rem]"
+            >
+              <img
+                src="/src/assets/textures/stripes.webp"
+                alt="Bold overlapping shapes in pink, yellow, blue and black"
+                loading="lazy"
+                class="absolute inset-0 size-full object-cover"
+              />
+            </div>
+            <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+              <div>
+                <h3 class="font-display text-2xl">Feather</h3>
+                <p class="mt-1 text-sm text-muted">
+                  A vein-like noise map bends the shapes.
+                </p>
+              </div>
+              <a
+                href="#anatomy"
+                data-show-effect="feather"
+                class="shrink-0 font-mono text-xs text-ember hover:underline"
+                >View shader</a
+              >
+            </figcaption>
+          </figure>
+
+          <figure class="md:col-span-4">
+            <div
+              data-demo="prism"
+              class="relative aspect-[4/3] overflow-hidden rounded-lg bg-ink-raised md:aspect-auto md:h-[26rem]"
+            >
+              <img
+                src="/src/assets/textures/thoughts.webp"
+                alt="Layered collage of handwriting and blue geometric blocks"
+                loading="lazy"
+                class="absolute inset-0 size-full object-cover"
+              />
+            </div>
+            <figcaption class="mt-4 flex items-baseline justify-between gap-4">
+              <div>
+                <h3 class="font-display text-2xl">Prism</h3>
+                <p class="mt-1 text-sm text-muted">
+                  Color channels split apart near your pointer.
+                </p>
+              </div>
+              <a
+                href="#anatomy"
+                data-show-effect="prism"
+                class="shrink-0 font-mono text-xs text-ember hover:underline"
+                >View shader</a
+              >
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="anatomy" class="border-y border-line bg-ink-raised">
+        <div class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+          <h2 class="max-w-3xl font-display text-4xl sm:text-5xl">
+            One function, two shader languages
+          </h2>
+          <p class="mt-4 max-w-xl leading-relaxed text-muted">
+            The left panel is the JavaScript running on this page. The right
+            panel is what p5.strands generated from it in your browser. Switch
+            the renderer at the top of the page to recompile.
+          </p>
+
+          <div
+            role="group"
+            aria-label="Effect"
+            class="mt-10 flex flex-wrap gap-2 font-mono text-xs"
+          >
+            <button
+              data-effect-tab="swell"
+              aria-pressed="true"
+              class="cursor-pointer rounded-full border border-line px-3 py-1.5 text-muted transition-colors hover:text-paper aria-pressed:border-ember aria-pressed:text-ember"
+            >
+              swell
+            </button>
+            <button
+              data-effect-tab="breathe"
+              aria-pressed="false"
+              class="cursor-pointer rounded-full border border-line px-3 py-1.5 text-muted transition-colors hover:text-paper aria-pressed:border-ember aria-pressed:text-ember"
+            >
+              breathe
+            </button>
+            <button
+              data-effect-tab="feather"
+              aria-pressed="false"
+              class="cursor-pointer rounded-full border border-line px-3 py-1.5 text-muted transition-colors hover:text-paper aria-pressed:border-ember aria-pressed:text-ember"
+            >
+              feather
+            </button>
+            <button
+              data-effect-tab="prism"
+              aria-pressed="false"
+              class="cursor-pointer rounded-full border border-line px-3 py-1.5 text-muted transition-colors hover:text-paper aria-pressed:border-ember aria-pressed:text-ember"
+            >
+              prism
+            </button>
+            <button
+              data-effect-tab="tide"
+              aria-pressed="false"
+              class="cursor-pointer rounded-full border border-line px-3 py-1.5 text-muted transition-colors hover:text-paper aria-pressed:border-ember aria-pressed:text-ember"
+            >
+              tide
+            </button>
+          </div>
+
+          <div class="mt-4 grid gap-4 lg:grid-cols-2">
+            <div class="min-w-0 overflow-hidden rounded-lg border border-line">
+              <p
+                class="border-b border-line px-4 py-2.5 font-mono text-xs text-muted"
+              >
+                JavaScript
+              </p>
+              <pre
+                tabindex="0"
+                class="h-96 overflow-auto bg-ink p-4 font-mono text-xs leading-relaxed"
+              ><code id="effect-source"></code></pre>
+            </div>
+            <div class="min-w-0 overflow-hidden rounded-lg border border-line">
+              <p
+                class="border-b border-line px-4 py-2.5 font-mono text-xs text-muted"
+              >
+                Generated <span id="compiled-label" class="text-ember"></span>
+              </p>
+              <pre
+                tabindex="0"
+                class="h-96 overflow-auto bg-ink p-4 font-mono text-xs leading-relaxed wrap-anywhere whitespace-pre-wrap text-paper/80"
+              ><code id="effect-compiled"></code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
+        <div class="grid gap-14 md:grid-cols-2 md:gap-16">
+          <article>
+            <h2 class="font-display text-4xl">What is WebGPU?</h2>
+            <p class="mt-4 leading-relaxed text-muted">
+              WebGPU is the web’s modern graphics and compute API, and the
+              successor to WebGL. It’s designed around today’s native GPU APIs:
+              Vulkan, Metal and Direct3D 12.
+            </p>
+            <ul class="mt-6 divide-y divide-line border-y border-line">
+              <li class="py-4">
+                <h3 class="font-medium">Compute shaders</h3>
+                <p class="mt-1 text-sm leading-relaxed text-muted">
+                  General-purpose GPU work, such as simulation, not only
+                  drawing.
+                </p>
+              </li>
+              <li class="py-4">
+                <h3 class="font-medium">Explicit pipelines</h3>
+                <p class="mt-1 text-sm leading-relaxed text-muted">
+                  State is declared up front rather than changed call by call,
+                  which leaves less work per draw.
+                </p>
+              </li>
+              <li class="py-4">
+                <h3 class="font-medium">WGSL</h3>
+                <p class="mt-1 text-sm leading-relaxed text-muted">
+                  A shading language built for the API, replacing GLSL.
+                </p>
+              </li>
+            </ul>
+          </article>
+
+          <article>
+            <h2 class="font-display text-4xl">What is p5.strands?</h2>
+            <p class="mt-4 leading-relaxed text-muted">
+              p5.strands lets you write shaders as JavaScript functions. It
+              reads your function and generates shader code for the active
+              renderer.
+            </p>
+            <ul class="mt-6 divide-y divide-line border-y border-line">
+              <li class="py-4">
+                <h3 class="font-medium">Hooks instead of boilerplate</h3>
+                <p class="mt-1 text-sm leading-relaxed text-muted">
+                  Change one stage, such as
+                  <code class="font-mono text-paper">filterColor</code> or
+                  <code class="font-mono text-paper">worldInputs</code>, and p5
+                  supplies the rest.
+                </p>
+              </li>
+              <li class="py-4">
+                <h3 class="font-medium">Familiar p5 functions</h3>
+                <p class="mt-1 text-sm leading-relaxed text-muted">
+                  <code class="font-mono text-paper">noise()</code>,
+                  <code class="font-mono text-paper">sin()</code> and
+                  <code class="font-mono text-paper">millis()</code> work the
+                  way they do in a sketch.
+                </p>
+              </li>
+              <li class="py-4">
+                <h3 class="font-medium">Portable by default</h3>
+                <p class="mt-1 text-sm leading-relaxed text-muted">
+                  The same source targets GLSL on WebGL and WGSL on WebGPU.
+                </p>
+              </li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="mt-20 grid gap-14 md:grid-cols-2 md:gap-16">
+          <div>
+            <h2 class="font-display text-3xl">Turning on WebGPU in p5</h2>
+            <p class="mt-3 text-sm leading-relaxed text-muted">
+              p5.js added its WebGPU renderer in version 2.2. It ships as an
+              add-on, and
+              <code class="font-mono text-paper">createCanvas()</code>
+              must be awaited.
+            </p>
+            <pre
+              tabindex="0"
+              class="mt-5 overflow-x-auto rounded-lg border border-line bg-ink-raised p-4 font-mono text-xs leading-relaxed"
+            ><code>import p5 from 'p5';
+import webgpu from 'p5/webgpu';
+
+p5.registerAddon(webgpu);
+
+new p5((p) => {
+  p.setup = async () => {
+    await p.createCanvas(400, 400, p.WEBGPU);
+  };
+});</code></pre>
+          </div>
+
+          <div>
+            <h2 class="font-display text-3xl">Browser support</h2>
+            <table class="mt-5 w-full text-left text-sm">
+              <caption class="sr-only">
+                First browser versions with WebGPU enabled by default
+              </caption>
+              <tbody class="divide-y divide-line border-y border-line">
+                <tr>
+                  <th scope="row" class="py-3 pr-4 font-medium">
+                    Chrome, Edge
+                  </th>
+                  <td class="py-3 text-muted">113 desktop, 121 Android</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="py-3 pr-4 font-medium">Safari</th>
+                  <td class="py-3 text-muted">26 on macOS, iOS and iPadOS</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="py-3 pr-4 font-medium">Firefox</th>
+                  <td class="py-3 text-muted">
+                    141 Windows, 145 Apple silicon Macs
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="mt-4 text-sm leading-relaxed text-muted">
+              Support varies by platform and GPU, so check the
+              <a
+                href="https://github.com/gpuweb/gpuweb/wiki/Implementation-Status"
+                class="text-paper underline underline-offset-2 hover:text-ember"
+                >implementation status</a
+              >
+              for current details. This page falls back to WebGL2 automatically.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-line">
+      <div
+        class="mx-auto grid max-w-6xl gap-10 px-4 py-14 text-sm sm:grid-cols-2 sm:px-6"
+      >
+        <div>
+          <h2 class="font-mono text-xs text-muted">Playground sketches</h2>
+          <ul class="mt-4 space-y-2">
+            <li>
+              <a href="src/sketches/test/test.html" class="hover:text-ember"
+                >Test sketch</a
+              >
+            </li>
+            <li>
+              <a
+                href="src/sketches/global-mode/global.html"
+                class="hover:text-ember"
+                >Global mode sketch</a
+              >
+            </li>
+            <li>
+              <a
+                href="src/sketches/single-mode/single.html"
+                class="hover:text-ember"
+                >Single sketch</a
+              >
+            </li>
+            <li>
+              <a
+                href="src/sketches/multi-mode/multi.html"
+                class="hover:text-ember"
+                >Multi sketch</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="font-mono text-xs text-muted">Learn more</h2>
+          <ul class="mt-4 space-y-2">
+            <li>
+              <a
+                href="https://beta.p5js.org/reference/p5/buildfiltershader/"
+                class="hover:text-ember"
+                >buildFilterShader reference</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://processingfoundation.org/blog/p5js-21-and-22-expanding-graphics-avenues-with-p5strands-improvements-and-webgpu"
+                class="hover:text-ember"
+                >p5.js 2.1 and 2.2 announcement</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://web.dev/blog/webgpu-supported-major-browsers"
+                class="hover:text-ember"
+                >WebGPU in major browsers</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/landing/main.js"></script>
   </body>
 </html>

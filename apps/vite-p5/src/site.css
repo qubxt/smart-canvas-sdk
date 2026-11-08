@@ -1,0 +1,47 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-ink: #0f0e0d;
+  --color-ink-raised: #191715;
+  --color-line: #2e2a26;
+  --color-paper: #f4efe6;
+  --color-muted: #a59c8f;
+  --color-ember: #ff7a45;
+
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ember);
+    outline-offset: 2px;
+  }
+}
+
+/* The poster <img> stays visible until the first frame lands. p5 inserts the
+   canvas itself, so it can't carry Tailwind classes from the markup. */
+[data-demo] canvas {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+[data-demo][data-live] canvas {
+  opacity: 1;
+}

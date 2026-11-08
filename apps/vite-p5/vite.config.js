@@ -15,7 +15,10 @@
 // })
 
 // vite.config.js
+import tailwindcss from '@tailwindcss/vite'
+
 export default {
+  plugins: [tailwindcss()],
   // publicDir: "../../public",
   server: {
     port: 3000,
@@ -23,4 +26,4 @@ export default {
     host: true,
     open: true,
   },
-};
+}
