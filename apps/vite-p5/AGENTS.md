@@ -1,0 +1,3 @@
+- prefer using multi-line comments 
+- default to styling with tailwindcss 
+- accompany new functionality with unit tests 
