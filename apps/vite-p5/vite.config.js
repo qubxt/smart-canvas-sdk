@@ -15,10 +15,19 @@
 // })
 
 // vite.config.js
+import { resolve } from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 
 export default {
   plugins: [tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(import.meta.dirname, 'index.html'),
+        explore: resolve(import.meta.dirname, 'explore/index.html'),
+      },
+    },
+  },
   // publicDir: "../../public",
   server: {
     port: 3000,
