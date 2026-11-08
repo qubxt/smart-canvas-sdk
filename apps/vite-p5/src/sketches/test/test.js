@@ -1,17 +1,27 @@
 
-import p5 from 'p5'
-window.p5 = p5
-Object.assign(window, { setup, draw })
-new p5() 
+Object.assign(window, { setup, draw, windowResized });
+import { nodes } from '../../utils/global-p5.js';
+import MotionShader from '../../effects/displace/MotionShader.js';
+import TextureShader from '../../effects/transition/TextureShader.js';
+import { MotionEffect, TextureEffect } from '../../effects/displace/MotionEffect.js';
+
+let motionShader = new MotionShader(nodes);
+let textureShader = new TextureShader(nodes);
 
 async function setup() {
-  await nodes.setupImages()
-  createCanvas(windowWidth/2, windowHeight, WEBGL);
-  background(100)
-  await motionShader.setupFilterShader()
+  await nodes.ready;
+  createCanvas(windowWidth * 0.75, windowHeight, WEBGL);
+  textureShader.setupFilterShader(TextureEffect);
+  motionShader.setupFilterShader(MotionEffect);
 }
 
 function draw() {
-  motionShader.drawShader()
+  textureShader.drawShader();
+  motionShader.drawShader();
 }
+
+function windowResized() {
+  resizeCanvas(windowWidth * 0.75, windowHeight);
+}
+
 

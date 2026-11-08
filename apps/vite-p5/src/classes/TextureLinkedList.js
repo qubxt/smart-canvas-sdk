@@ -1,33 +1,29 @@
-
 class Node {
   constructor(key, img) {
-    this.key = key
-    this.img = img
-    this.next = null
-    this.prev = null
+    this.img = img;
+    this.key = key;
+    this.prev = null;
+    this.next = null;
   }
 }
 
-class LinkedList {
-  constructor({images}) {
-    this.images = images
-    this.head = null
+export default class LinkedList {
+  constructor({ images }) {
+    this.head = null;
+    this.images = images;
+    this.ready = this.createP5LinkedList();
   }
-
-  async linkImages() {
-    const loaders = this.images.map(({ key, path, type }) => {
+  async createP5LinkedList() {
+    const loaders = this.images.map(({ key, path }) => {
       return new Promise((resolve) => {
       loadImage(path, (img) => resolve({ key, img }))
       })
     })
-
-    return Promise.all(loaders).then((loaded) => {
+    return Promise.all(loaders).then( (loaded ) => {
       let head = null
       let current = null
-
       loaded.forEach(({ key, img }) => {
         const node = new Node(key, img)
-
         if (!head) {
           head = node
           current = node
@@ -37,18 +33,11 @@ class LinkedList {
           current = node
         }
       })
-
       // Close the loop
       current.next = head
       head.prev = current
       this.head = head
     })
   }
-
-  async setupImages() {
-    await this.linkImages().then(() => {
-      nodes = nodes.head
-      console.log(nodes)
-    })
-  }
 }
+

@@ -1,5 +1,5 @@
 
-function TransitionStrand() {
+function TextureEffect() {
   filterColor.begin()
 
   let coord = filterColor.texCoord

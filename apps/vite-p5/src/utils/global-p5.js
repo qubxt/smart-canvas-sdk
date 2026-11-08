@@ -1,4 +1,7 @@
-let images = [
+import p5 from 'p5'
+import LinkedList from '../classes/TextureLinkedList.js'
+
+export const images = [
   {
     type: 'image',
     key: 'laiscet_1',
@@ -16,5 +19,7 @@ let images = [
   // },
 ]
 
-let nodes = new LinkedList({ images })
-let motionShader = new MotionShader()
+
+window.p5 = p5
+export default new p5()
+export let nodes = new LinkedList({ images })
